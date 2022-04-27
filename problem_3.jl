@@ -8,6 +8,10 @@ graph = file_reader.graphReader("instancias/instance_12_17.dat")
 n = nv(graph) # total de vértices
 
 model = Model(GLPK.Optimizer)
+
+# 5 min de limite de tempo
+set_time_limit_sec(model, 300.0)
+
 # Definiçao das variaveis
 @variable(model, x[1:n], Bin)
 @variable(model, y[1:n, 1:n, 1:n], Bin)
@@ -33,6 +37,35 @@ for i in 1:n
                     y[i, j, k] == 0
                 )
             end
+        end
+    end
+end
+
+#= 
+  o fluxo no vértice de origem,
+   no cenário em que  j é o destino, é -1 se o vértice j tem uma caixa, 0 se não tem.
+=#
+for j in 1:n
+    @constraint(model, b[1, j] == -x[j])
+end
+
+#= 
+  fluxo em vértices intermediários é sempre 0
+=#
+for i in 1:n
+    for j in 1:n
+        if i != 1 && i != j
+            @constraint(model,
+                b[i, j] == 0
+            )
+            #= 
+                fluxo no vértice de destino, no cenário em que  j é o destino,
+                 é 1 se o vértice j tem uma caixa,  0 se não tem
+            =#
+        elseif i != 1 && i == j
+            @constraint(model,
+                b[i, j] == x[j]
+            )
         end
     end
 end
@@ -64,44 +97,18 @@ for i in 1:n
         for k in 1:n
             if j != k
                 @constraint(model,
-                    x[j] + y[i, j, k] == 1
+                    x[j] + y[i, j, k] <= 1
                 )
             end
         end
     end
 end
 
-#= 
-  o fluxo no vértice de origem,
-   no cenário em que  j é o destino, é -1 se o vértice j tem uma caixa, 0 se não tem.
-=#
-for j in 1:n
-    @constraint(model, b[1, j] == -x[j])
-end
-
-#= 
-  fluxo em vértices intermediários é sempre 0
-=#
-for i in 1:n
-    for j in 1:n
-        if i != 1 && i != j
-            @constraint(model,
-                b[i, j] == 0
-            )
-        elseif i != 1 && i == j
-            @constraint(model,
-                b[i, j] == x[j]
-            )
-        end
-    end
-end
-
-
 optimize!(model)
 if termination_status(model) == MOI.OPTIMAL
     println("Solução ótima encontrada!")
     @show objective_value(model)
-    @show value(x)
+    @show value.(x)
 else
     s = termination_status(model)
     println("Infactível ou ilimitado", ". STATUS: $s")
