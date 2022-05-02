@@ -6,20 +6,27 @@ using Graphs
 
 # arquivos que não dão erro de memória
 for file in [
-    # "instancias/instance_50_85.dat",
-    # "instancias/instance_50_120.dat",
-    # "instancias/instance_50_300.dat",
-    # "instancias/instance_100_180.dat",
-    # "instancias/instance_100_245.dat",
-    # "instancias/instance_100_490.dat",
-    # "instancias/instance_100_1225.dat",
-    # "instancias/instance_150_555.dat",
-    # "instancias/instance_150_1110.dat",
+    "instancias/instance_12_17.dat",
+    "instancias/instance_50_60.dat",
+    "instancias/instance_50_85.dat",
+    "instancias/instance_50_120.dat",
+    "instancias/instance_50_300.dat",
+    "instancias/instance_100_180.dat",
+    "instancias/instance_100_245.dat",
+    "instancias/instance_100_490.dat",
+    "instancias/instance_100_1225.dat",
+    "instancias/instance_150_555.dat",
+    "instancias/instance_150_1110.dat",
     "instancias/instance_150_2775.dat",
     "instancias/instance_200_990.dat",
     "instancias/instance_200_1980.dat",
     "instancias/instance_200_4950.dat",
     "instancias/instance_300_565.dat",
+    "instancias/instance_500_6225.dat",
+    "instancias/instance_500_12450.dat",
+    "instancias/instance_500_31125.dat",
+    "instancias/instance_1500_2920.dat",
+    "instancias/instance_1000_19800.dat",
 ]
 
     graph = file_reader.graphReader(file)
